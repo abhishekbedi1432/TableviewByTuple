@@ -35,17 +35,14 @@ class ViewController: UIViewController {
     
     // This array is the datasource array consisting of
     var sections       = [(sectionType:Section, superheroes:[String])]()
-    
-    
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
         setupDataSource()
     }
-    
-    
+
     func setupDataSource() {
         
         // handle all data display here.
@@ -53,8 +50,6 @@ class ViewController: UIViewController {
         sections.append((sectionType: .dcSuperheroes, superheroes: dcSuperheroes))
     }
 }
-
-
 
 
 extension ViewController: UITableViewDelegate {
@@ -82,11 +77,8 @@ extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell              = tableView.dequeueReusableCell(withIdentifier: "Cell")
-
         let tuple             = sections[indexPath.section]
-
         cell?.textLabel?.text = tuple.superheroes[indexPath.row]
-        
         return cell!
     }
 }
