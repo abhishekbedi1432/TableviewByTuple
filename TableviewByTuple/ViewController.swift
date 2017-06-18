@@ -7,46 +7,35 @@
 
 import UIKit
 
-extension ViewController: UITableViewDelegate {
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 50
+enum Section {
+    
+    case marvelSuperheroes
+    case dcSuperheroes
+
+    var title: String {
+        switch self {
+        case .marvelSuperheroes:
+            return "Marvel Superheroes"
+            
+        case .dcSuperheroes:
+            return "DC Superheroes"
+        }
     }
 }
-
-extension ViewController: UITableViewDataSource {
-    
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let tuple = arrSections[section]
-        return tuple.superheroes.count
-    }
-    
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return arrSections.count
-    }
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: nil)
-        
-        let tuple = arrSections[indexPath.section]
-        cell.textLabel?.text = tuple.superheroes[indexPath.row]
-        return cell
-    }
-    
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let sec = arrSections[section].sectionType
-        return sec
-    }
-    
-}
-
 
 class ViewController: UIViewController {
     
+    /// IBOutlet(s)
     @IBOutlet weak var table: UITableView!
     
+    
+    /// Variables
     var marvelSuperheroes = ["Avengers","Spider-Man","Iron Man","Captain America","Deadpool","Daredevil"]
     var dcSuperheroes     = ["Superman","Batman","Wonder Woman","Green Lantern","The Flash","Aquaman"]
-    var arrSections       = [(sectionType:String, superheroes:[String])]()
+    
+    // This array is the datasource array consisting of
+    var sections       = [(sectionType:Section, superheroes:[String])]()
+    
     
     
     override func viewDidLoad() {
@@ -54,22 +43,50 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         
         setupDataSource()
-        
     }
+    
     
     func setupDataSource() {
         
         // handle all data display here.
-        arrSections.append((sectionType: "Marvel Superheroes", superheroes: marvelSuperheroes))
-        arrSections.append((sectionType: "DC Superheroes", superheroes: dcSuperheroes))
-        
-        
+        sections.append((sectionType: .marvelSuperheroes, superheroes: marvelSuperheroes))
+        sections.append((sectionType: .dcSuperheroes, superheroes: dcSuperheroes))
     }
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+}
+
+
+
+
+extension ViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
     }
-    
     
 }
 
+extension ViewController: UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return sections[section].superheroes.count
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return sections.count
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sections[section].sectionType.title
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell              = tableView.dequeueReusableCell(withIdentifier: "Cell")
+
+        let tuple             = sections[indexPath.section]
+
+        cell?.textLabel?.text = tuple.superheroes[indexPath.row]
+        
+        return cell!
+    }
+}
